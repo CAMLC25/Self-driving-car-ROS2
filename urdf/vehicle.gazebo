@@ -1,20 +1,42 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <gazebo>
+    <!-- 1. Plugin điều khiển xe (Ackermann Steering) -->
+    <plugin
+      filename="gz-sim-ackermann-steering-system"
+      name="gz::sim::systems::AckermannSteering">
+      <!-- Tên các khớp (Phải trùng với file vehicle.xacro) -->
+      <left_joint>wheel_left_rear_joint</left_joint>
+      <right_joint>wheel_right_rear_joint</right_joint>
+      <left_steering_joint>steering_left_front_joint</left_steering_joint>
+      <right_steering_joint>steering_right_front_joint</right_steering_joint>
 
-  <xacro:include filename="$(find self-driving-car)/urdf/wheel.gazebo"/>
-  <xacro:include filename="$(find self-driving-car)/urdf/steering.gazebo"/>
-  <gazebo>
-    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <robotNamespace>/autoware_gazebo</robotNamespace>
-      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      <!-- Thông số vật lý (Ước lượng từ model) -->
+      <kingpin_width>1.0</kingpin_width>
+      <steering_limit>0.5</steering_limit>
+      <wheel_base>2.5</wheel_base>
+      <wheel_separation>1.5</wheel_separation>
+      <wheel_radius>0.34</wheel_radius>
+      
+      <!-- Giới hạn tốc độ và gia tốc -->
+      <min_velocity>-5.0</min_velocity>
+      <max_velocity>20.0</max_velocity>
+      <min_acceleration>-5.0</min_acceleration>
+      <max_acceleration>5.0</max_acceleration>
+
+      <!-- Topic để điều khiển -->
+      <topic>/cmd_vel</topic>
     </plugin>
-  </gazebo>
-  <gazebo>
-    <plugin filename="libgazebo_ros_joint_state_publisher.so" name="joint_state_publisher">
-      <jointName>wheel_left_rear_joint, wheel_right_rear_joint, steering_left_front_joint, steering_right_front_joint, wheel_left_front_joint, wheel_right_front_joint</jointName>
-      <updateRate>10.0</updateRate>
-      <robotNamespace>/autoware_gazebo</robotNamespace>
-      <alwaysOn>false</alwaysOn>
+
+    <!-- 2. Plugin xuất trạng thái các khớp (Cần thiết cho Robot State Publisher) -->
+    <plugin filename="gz-sim-joint-state-publisher-system"
+      name="gz::sim::systems::JointStatePublisher">
+    </plugin>
+
+    <!-- 3. Plugin quản lý cảm biến (Để Camera hoạt động) -->
+    <plugin filename="gz-sim-sensors-system"
+      name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
     </plugin>
   </gazebo>
 </robot>

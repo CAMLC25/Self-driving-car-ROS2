@@ -1,20 +1,20 @@
 <?xml version="1.0"?>
 <robot name="autoware_gazebo" xmlns:xacro="http://ros.org/wiki/xacro">
-	<xacro:include filename="$(find self-driving-car)/urdf/body.xacro" />
-	<xacro:include filename="$(find self-driving-car)/urdf/wheel.xacro" />
-	<xacro:include filename="$(find self-driving-car)/urdf/steering.xacro" />
-	<xacro:include filename="$(find self-driving-car)/urdf/monocular_camera.xacro"/>
-	<!--xacro:include filename="$(find self-driving-car)/urdf/imu.xacro"/-->
+	<xacro:include filename="$(find my_self_driving_bot)/urdf/body.xacro" />
+	<xacro:include filename="$(find my_self_driving_bot)/urdf/wheel.xacro" />
+	<xacro:include filename="$(find my_self_driving_bot)/urdf/steering.xacro" />
+	<xacro:include filename="$(find my_self_driving_bot)/urdf/monocular_camera.xacro"/>
+	<!--xacro:include filename="$(find my_self_driving_bot)/urdf/imu.xacro"/-->
 
 	<xacro:arg name="gpu" default="false"/>
 
-	<xacro:property name="pi" value="3.1415926835897931"/>
+	<!-- <xacro:property name="pi" value="3.1415926835897931"/> -->
 
 	<link name="base_footprint"/>
 
   <!-- ================ vehicle ================ -->
   <!-- load parameter -->
-	<xacro:property name="vehicle_info" value="${load_yaml('$(find self-driving-car)/config/vehicle_info.yaml')}"/>
+	<xacro:property name="vehicle_info" value="${load_yaml('$(find my_self_driving_bot)/config/vehicle_info.yaml')}"/>
 	
   <!-- set parameter -->
 	<xacro:property name="wheel_radius" value="${vehicle_info['wheel_radius']}"/>
@@ -50,13 +50,13 @@
   <xacro:wheel_macro suffix="wheel_left_rear" parent="base_link" x="0" y="${wheel_tread/2}" yaw="0" radius="${wheel_radius}" width="${wheel_width}"/>
 
   <!-- actuator -->
- 	<xacro:include filename="$(find self-driving-car)/urdf/actuator.xacro"/>
+ 	<!-- <xacro:include filename="$(find my_self_driving_bot)/urdf/actuator.xacro"/> -->
 
   <!-- gazebo -->
- 	<xacro:include filename="$(find self-driving-car)/urdf/vehicle.gazebo"/>
+ 	<xacro:include filename="$(find my_self_driving_bot)/urdf/vehicle.gazebo"/>
 
   <!-- ================ sensor ================ -->
-	<xacro:property name="calibration" value="${load_yaml('$(find self-driving-car)/config/calibration.yaml')}"/>
+	<xacro:property name="calibration" value="${load_yaml('$(find my_self_driving_bot)/config/calibration.yaml')}"/>
   
 
   <xacro:monocular_camera_macro suffix="camera" parent="base_link" namespace="" 

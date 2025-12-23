@@ -1,60 +1,54 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:property name="pi" value="3.1415926835897931" />
-
 
   <xacro:macro name="monocular_camera_macro" params="suffix parent namespace x y z roll pitch yaw fps width height fov">
-    <xacro:property name="sensor_box" value="0.05" />
-    <xacro:property name="mass" value="0.1" />
 
-    <joint name="${suffix}_joint" type="fixed">
-      <origin rpy="${roll} ${pitch} ${yaw}" xyz="${x} ${y} ${z}"/>
-      <parent link="${parent}"/>
-      <child  link="${suffix}_link"/>
-    </joint>
-
+    <!-- 1. Tạo Link Camera (Khung vỏ camera) -->
     <link name="${suffix}_link">
       <visual>
         <geometry>
-          <box size="${sensor_box} ${sensor_box} ${sensor_box}"/>
+          <box size="0.05 0.05 0.05"/>
         </geometry>
-        <origin rpy="0 0 0" xyz="0 0 0"/>
-        <gazebo reference="${suffix}_link">
-  		<material value="Gazebo/Red"/>
-	</gazebo>
+        <material name="red">
+          <color rgba="1 0 0 1"/>
+        </material>
       </visual>
-      
-      <inertial>
-        <origin rpy="0 0 0" xyz="0 0 0"/>
-        <mass value="${mass}"/>
-        <inertia ixx="${(sensor_box*sensor_box+sensor_box*sensor_box)*mass/12.0}" ixy="0.0" ixz="0.0" 
-                 iyy="${(sensor_box*sensor_box+sensor_box*sensor_box)*mass/12.0}" iyz="0.0" 
-                 izz="${(sensor_box*sensor_box+sensor_box*sensor_box)*mass/12.0}"/>
-      </inertial>
-      
       <collision>
-        <origin rpy="0 0 0" xyz="0 0 0"/>
         <geometry>
-          <box size="${sensor_box} ${sensor_box} ${sensor_box}"/>
+          <box size="0.05 0.05 0.05"/>
         </geometry>
       </collision>
-      
+      <inertial>
+        <mass value="0.1"/>
+        <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+      </inertial>
     </link>
-    
-    <joint name="${suffix}_optical_joint" type="fixed">
-      <origin rpy="${-pi/2} 0 ${-pi/2}" xyz="0 0 0"/>
-      <parent link="${suffix}_link"/>
-      <child  link="${suffix}_optical_link"/>
+
+    <!-- 2. Tạo Khớp nối (Gắn camera vào xe) -->
+    <joint name="${suffix}_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="${suffix}_link"/>
+      <origin xyz="${x} ${y} ${z}" rpy="${roll} ${pitch} ${yaw}"/>
     </joint>
-    
-    <link name="${suffix}_optical_link" />
-    
-    <!-- camera -->
+
+    <!-- 3. Tạo Optical Frame (Quan trọng cho OpenCV) -->
+    <!-- Camera trong ROS nhìn theo trục Z, còn xe nhìn trục X. Cần khớp quay này -->
+    <link name="${suffix}_optical_frame"/>
+    <joint name="${suffix}_optical_joint" type="fixed">
+      <parent link="${suffix}_link"/>
+      <child link="${suffix}_optical_frame"/>
+      <origin xyz="0 0 0" rpy="-1.570796 0 -1.570796"/>
+    </joint>
+
+    <!-- 4. Cấu hình Sensor cho Gazebo Harmonic -->
     <gazebo reference="${suffix}_link">
-      <material value="Gazebo/Black"/>
-      <sensor type="camera" name="${suffix}">
+      <sensor name="${suffix}_sensor" type="camera">
+        <pose>0 0 0 0 0 0</pose>
+        <visualize>true</visualize> <!-- Hiện tia camera trong Gazebo để debug -->
         <update_rate>${fps}</update_rate>
-        <camera name="${suffix}">
+        <topic>camera/image_raw</topic> <!-- Topic gốc trong Gazebo -->
+        
+        <camera>
           <horizontal_fov>${fov}</horizontal_fov>
           <image>
             <width>${width}</width>
@@ -62,33 +56,12 @@
             <format>R8G8B8</format>
           </image>
           <clip>
-            <near>0.02</near>
-            <far>300</far>
+            <near>0.1</near>
+            <far>100</far>
           </clip>
-          <noise>
-            <type>gaussian</type>
-            <!-- Noise is sampled independently per pixel on each frame.
-                 That pixel's noise value is added to each of its color
-                 channels, which at that point lie in the range [0,1]. -->
-            <mean>0.0</mean>
-            <stddev>0.007</stddev>
-          </noise>
         </camera>
-        <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
-          <alwaysOn>true</alwaysOn>
-          <updateRate>0.0</updateRate>
-          <cameraName>${namespace}</cameraName>
-          <imageTopicName>image_raw</imageTopicName>
-          <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-          <frameName>${suffix}_optical_link</frameName>
-          <hackBaseline>0.0</hackBaseline>
-          <distortionK1>0.0</distortionK1>
-          <distortionK2>0.0</distortionK2>
-          <distortionK3>0.0</distortionK3>
-          <distortionT1>0.0</distortionT1>
-          <distortionT2>0.0</distortionT2>
-        </plugin>
       </sensor>
     </gazebo>
-  </xacro:macro>  
+
+  </xacro:macro>
 </robot>

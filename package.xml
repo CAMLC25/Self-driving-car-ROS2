@@ -1,52 +1,30 @@
 <?xml version="1.0"?>
-<package format="2">
-  <name>self-driving-car</name>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>my_self_driving_bot</name>
   <version>0.0.0</version>
-  <description>The self-driving-car package</description>
+  <description>Auto driving car simulation for ROS 2 Jazzy</description>
+  <maintainer email="user@todo.todo">user</maintainer>
+  <license>TODO: License declaration</license>
 
-  <maintainer email="nqt@todo.todo">nqt</maintainer>
-  
-  <license>TODO</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>rclpy</depend>
+  <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>ros_gz_sim</depend>
+  <depend>ros_gz_bridge</depend>
+  <depend>ros_gz_image</depend>
+  <depend>cv_bridge</depend>
+  <depend>image_transport</depend>
 
-  <build_depend>roscpp</build_depend>
-  <build_depend>rospy</build_depend>
-  <build_depend>std_msgs</build_depend>
-	<build_depend>geometry_msgs</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>gazebo_msgs</build_depend>
-  <build_depend>urdf_tutorial</build_depend>
-  <build_depend>controller_manager</build_depend>
-  <build_depend>robot_state_publisher</build_depend>
-  <build_depend>joint_state_controller</build_depend>
-	<build_depend>gazebo_ros_control</build_depend>
-
-  <build_export_depend>roscpp</build_export_depend>
-  <build_export_depend>rospy</build_export_depend>
-  <build_export_depend>std_msgs</build_export_depend>
-	<build_export_depend>geometry_msgs</build_export_depend>
-  <build_export_depend>sensor_msgs</build_export_depend>
-  <build_export_depend>gazebo_msgs</build_export_depend>
-	<build_export_depend>urdf_tutorial</build_export_depend>
-  <build_export_depend>controller_manager</build_export_depend>
-  <build_export_depend>robot_state_publisher</build_export_depend>
-  <build_export_depend>joint_state_controller</build_export_depend>
-	<build_export_depend>gazebo_ros_control</build_export_depend>
-
-  <exec_depend>roscpp</exec_depend>
-  <exec_depend>rospy</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-	<exec_depend>geometry_msgs</exec_depend>
-  <exec_depend>sensor_msgs</exec_depend>
-  <exec_depend>gazebo_msgs</exec_depend>
-	<exec_depend>urdf_tutorial</exec_depend>
-  <exec_depend>controller_manager</exec_depend>
-  <exec_depend>robot_state_publisher</exec_depend>
-  <exec_depend>joint_state_controller</exec_depend>
-	<exec_depend>gazebo_ros_control</exec_depend>
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
 
   <export>
-  	<gazebo_ros gazebo_media_path="${prefix}/worlds"/>
+    <build_type>ament_cmake</build_type>
+    <gazebo_ros gazebo_model_path="${prefix}/.." />
   </export>
 </package>

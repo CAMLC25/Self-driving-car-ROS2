@@ -1,51 +1,35 @@
-cmake_minimum_required(VERSION 3.0.2)
-project(self-driving-car)
+cmake_minimum_required(VERSION 3.8)
+project(my_self_driving_bot)
 
-add_compile_options(-std=c++11)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
-find_package(catkin REQUIRED COMPONENTS
-	roscpp
-	rospy
-	std_msgs
-	sensor_msgs
-	gazebo_msgs
-	geometry_msgs
-	urdf_tutorial
-	joint_state_controller
-	controller_manager
-	gazebo_ros_control
-	cv_bridge
-	${OpenCV_INCLUDE_DIRS}
+# 1. Tìm các thư viện cần thiết
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclpy REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(cv_bridge REQUIRED)
+find_package(ros_gz_sim REQUIRED)
+find_package(ros_gz_bridge REQUIRED)
+
+# 2. Cài đặt các thư mục tài nguyên
+install(DIRECTORY
+  config
+  launch
+  worlds
+  urdf
+  mesh
+  DESTINATION share/${PROJECT_NAME}
 )
 
-find_package(OpenCV 4.2.0 REQUIRED)
-
-catkin_package(CATKIN_DEPENDS
-	sensor_msgs
-	gazebo_msgs
-	geometry_msgs
-	urdf_tutorial
-	controller_manager
-	robot_state_publisher
-	joint_state_controller
-	gazebo_ros_control
+# 3. Cài đặt file Python (Node điều khiển chính)
+install(PROGRAMS
+  src/line_follower.py
+  DESTINATION lib/${PROJECT_NAME}
 )
 
-include_directories(include
-	${catkin_INCLUDE_DIRS}
-	${OpenCV_INCLUDE_DIRS}
-)
-
-add_executable(vehicle_input_subscriber src/vehicle_input_subscriber.cpp)
-add_dependencies(vehicle_input_subscriber ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(vehicle_input_subscriber ${catkin_LIBRARIES})
-
-install(TARGETS vehicle_input_subscriber
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
-
-catkin_install_python(PROGRAMS src/control.py src/auto_control.py src/auto_control_command.py
- 	DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+ament_package()

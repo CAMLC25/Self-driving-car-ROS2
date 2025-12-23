@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:macro name="wheel_macro" params="suffix parent x y yaw radius width">
-    <xacro:property name="pi" value="3.1415926835897931" />
+    <!-- <xacro:property name="pi" value="3.1415926835897931" /> -->
     <xacro:property name="mass" value="40" />
     
     <joint name="${suffix}_joint" type="continuous">
@@ -17,7 +17,7 @@
     <link name="${suffix}_link">
       <visual>
         <geometry>
-          <mesh filename="package://self-driving-car/mesh/wheel.dae" scale="${3*radius} ${3*radius} ${3*radius}"/>
+          <mesh filename="package://my_self_driving_bot/mesh/wheel.dae" scale="${3*radius} ${3*radius} ${3*radius}"/>
         </geometry>
         <origin xyz="0 0 0" rpy="0 0 ${yaw}"/>
         <gazebo reference="${suffix}_link">
