@@ -59,7 +59,11 @@ def generate_launch_description():
             '/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',
             '/camera/image_raw@sensor_msgs/msg/Image[gz.msgs.Image',
             '/camera/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo',
-            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock' # THÊM DÒNG NÀY
+            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
+            '/world/default/model/my_bot/joint_state@sensor_msgs/msg/JointState[gz.msgs.Model'
+        ],
+        remappings=[
+            ('/world/default/model/my_bot/joint_state', '/joint_states'),
         ],
         output='screen'
     )
